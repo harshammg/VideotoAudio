@@ -20,7 +20,7 @@ export const ConvertButton = ({
   const isProcessing = isLoading || isConverting;
   
   const getButtonText = () => {
-    if (isLoading) return 'Loading FFmpeg...';
+    if (isLoading) return 'Preparing converter...';
     if (isConverting) return `Converting... ${progress}%`;
     return 'Convert to Audio';
   };
@@ -63,7 +63,7 @@ export const ConvertButton = ({
       
       {isLoading && (
         <p className="text-xs text-muted-foreground text-center mt-2">
-          Loading conversion engine (first time only)...
+          Initializing audio processor...
         </p>
       )}
     </div>

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Music, Waves } from 'lucide-react';
-import type { OutputFormat } from '@/hooks/useFFmpeg';
+import type { OutputFormat } from '@/hooks/useMediaProcessor';
 
 interface FormatSelectorProps {
   value: OutputFormat;

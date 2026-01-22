@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Check, RotateCcw, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { OutputFormat } from '@/hooks/useFFmpeg';
+import type { OutputFormat } from '@/hooks/useMediaProcessor';
 
 interface DownloadSectionProps {
   audioBlob: Blob | null;

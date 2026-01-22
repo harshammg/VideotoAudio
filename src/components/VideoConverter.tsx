@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Video, Shield, Zap } from 'lucide-react';
-import { useFFmpeg, type OutputFormat } from '@/hooks/useFFmpeg';
+import { useMediaProcessor, type OutputFormat } from '@/hooks/useMediaProcessor';
 import { UploadZone } from './UploadZone';
 import { FormatSelector } from './FormatSelector';
 import { ConvertButton } from './ConvertButton';
@@ -16,7 +16,7 @@ export const VideoConverter = () => {
     progress,
     error,
     convertToAudio
-  } = useFFmpeg();
+  } = useMediaProcessor();
   const handleConvert = useCallback(async () => {
     if (!file) return;
     setAudioBlob(null);

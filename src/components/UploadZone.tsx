@@ -2,8 +2,15 @@ import { useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, File, X, AlertCircle } from 'lucide-react';
 
-const ACCEPTED_FORMATS = ['video/mp4', 'video/x-matroska', 'video/quicktime', 'video/x-msvideo', 'video/webm'];
-const ACCEPTED_EXTENSIONS = ['.mp4', '.mkv', '.mov', '.avi', '.webm'];
+const ACCEPTED_FORMATS = [
+  'video/mp4', 'video/x-matroska', 'video/quicktime', 
+  'video/x-msvideo', 'video/webm', 'video/ogg',
+  'audio/mpeg', 'audio/wav', 'audio/mp3', 'audio/aac', 'audio/flac'
+];
+const ACCEPTED_EXTENSIONS = [
+  '.mp4', '.mkv', '.mov', '.avi', '.webm', '.ogg',
+  '.mp3', '.wav', '.aac', '.flac'
+];
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 
 interface UploadZoneProps {
