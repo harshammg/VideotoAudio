@@ -9,8 +9,9 @@ interface FormatSelectorProps {
 }
 
 const formats: { value: OutputFormat; label: string; icon: typeof Music; description: string }[] = [
-  { value: 'mp3', label: 'MP3', icon: Music, description: 'Compressed, smaller file' },
-  { value: 'wav', label: 'WAV', icon: Waves, description: 'Lossless, higher quality' },
+  { value: 'mp3-128', label: 'MP3', icon: Music, description: '128kbps • Smaller file' },
+  { value: 'mp3-320', label: 'MP3 HD', icon: Music, description: '320kbps • Best quality' },
+  { value: 'wav', label: 'WAV', icon: Waves, description: 'Lossless • Largest file' },
 ];
 
 export const FormatSelector = ({ value, onChange, disabled }: FormatSelectorProps) => {
@@ -20,7 +21,7 @@ export const FormatSelector = ({ value, onChange, disabled }: FormatSelectorProp
         Output Format
       </label>
       
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         {formats.map((format) => {
           const Icon = format.icon;
           const isSelected = value === format.value;

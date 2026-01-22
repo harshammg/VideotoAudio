@@ -8,7 +8,7 @@ import { ConvertButton } from './ConvertButton';
 import { DownloadSection } from './DownloadSection';
 export const VideoConverter = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [format, setFormat] = useState<OutputFormat>('mp3');
+  const [format, setFormat] = useState<OutputFormat>('mp3-128');
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const {
     isLoading,
