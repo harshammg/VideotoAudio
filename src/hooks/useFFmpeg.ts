@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
 
-export type OutputFormat = 'mp3' | 'wav';
+export type OutputFormat = 'mp3-128' | 'mp3-320' | 'wav';
 
 interface ConversionState {
   isLoading: boolean;
@@ -66,12 +66,14 @@ export const useFFmpeg = (): UseFFmpegReturn => {
       }
 
       const inputName = 'input' + file.name.substring(file.name.lastIndexOf('.'));
-      const outputName = `output.${format}`;
+      const outputExt = format.startsWith('mp3') ? 'mp3' : 'wav';
+      const outputName = `output.${outputExt}`;
 
       await ffmpeg.writeFile(inputName, await fetchFile(file));
 
-      const audioCodec = format === 'mp3' ? 'libmp3lame' : 'pcm_s16le';
-      const bitrate = format === 'mp3' ? ['-b:a', '192k'] : [];
+      const isMP3 = format.startsWith('mp3');
+      const audioCodec = isMP3 ? 'libmp3lame' : 'pcm_s16le';
+      const bitrate = format === 'mp3-128' ? ['-b:a', '128k'] : format === 'mp3-320' ? ['-b:a', '320k'] : [];
 
       await ffmpeg.exec([
         '-i', inputName,
@@ -82,7 +84,7 @@ export const useFFmpeg = (): UseFFmpegReturn => {
       ]);
 
       const data = await ffmpeg.readFile(outputName);
-      const mimeType = format === 'mp3' ? 'audio/mpeg' : 'audio/wav';
+      const mimeType = isMP3 ? 'audio/mpeg' : 'audio/wav';
       const uint8Array = data as Uint8Array;
       const blob = new Blob([new Uint8Array(uint8Array)], { type: mimeType });
 
