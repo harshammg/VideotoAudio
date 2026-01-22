@@ -21,7 +21,7 @@ export const FormatSelector = ({ value, onChange, disabled }: FormatSelectorProp
         Output Format
       </label>
       
-      <div className="grid grid-cols-3 gap-3">
+      <div className="flex flex-col gap-2">
         {formats.map((format) => {
           const Icon = format.icon;
           const isSelected = value === format.value;
@@ -34,7 +34,7 @@ export const FormatSelector = ({ value, onChange, disabled }: FormatSelectorProp
               onClick={() => !disabled && onChange(format.value)}
               disabled={disabled}
               className={`
-                relative flex flex-col items-center gap-2 p-4 rounded-lg border-2 
+                relative flex items-center gap-3 p-3 rounded-lg border-2 
                 transition-all duration-200
                 ${isSelected 
                   ? 'border-primary bg-primary/5' 
@@ -55,14 +55,14 @@ export const FormatSelector = ({ value, onChange, disabled }: FormatSelectorProp
                 p-2 rounded-full transition-colors duration-200
                 ${isSelected ? 'bg-primary/10' : 'bg-muted'}
               `}>
-                <Icon className={`w-5 h-5 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
+                <Icon className={`w-4 h-4 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
               </div>
               
-              <div className="text-center">
+              <div className="flex-1 text-left">
                 <p className={`text-sm font-semibold ${isSelected ? 'text-primary' : 'text-foreground'}`}>
                   {format.label}
                 </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-xs text-muted-foreground">
                   {format.description}
                 </p>
               </div>
