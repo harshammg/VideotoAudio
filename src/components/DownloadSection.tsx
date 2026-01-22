@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Check, RotateCcw, Play, Pause } from 'lucide-react';
+import { Download, Check, RotateCcw, Play, Pause, Edit3, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import type { OutputFormat } from '@/hooks/useMediaProcessor';
 
 interface DownloadSectionProps {
@@ -20,16 +21,22 @@ export const DownloadSection = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isEditingFilename, setIsEditingFilename] = useState(false);
+  const [customFilename, setCustomFilename] = useState('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const filenameInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (audioBlob) {
       const url = URL.createObjectURL(audioBlob);
       setAudioUrl(url);
+      // Initialize filename without extension
+      const baseName = originalFileName.replace(/\.[^/.]+$/, '');
+      setCustomFilename(baseName);
       return () => URL.revokeObjectURL(url);
     }
-  }, [audioBlob]);
+  }, [audioBlob, originalFileName]);
 
   if (!audioBlob || !audioUrl) return null;
 
@@ -37,13 +44,49 @@ export const DownloadSection = ({
     const a = document.createElement('a');
     a.href = audioUrl;
     
-    const baseName = originalFileName.replace(/\.[^/.]+$/, '');
     const ext = format.startsWith('mp3') ? 'mp3' : 'wav';
-    a.download = `${baseName}.${ext}`;
+    const filename = customFilename.trim() || 'audio';
+    a.download = `${filename}.${ext}`;
     
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  };
+
+  const handleEditFilename = () => {
+    setIsEditingFilename(true);
+    // Focus input after state update
+    setTimeout(() => {
+      if (filenameInputRef.current) {
+        filenameInputRef.current.focus();
+        filenameInputRef.current.select();
+      }
+    }, 0);
+  };
+
+  const handleSaveFilename = () => {
+    if (customFilename.trim()) {
+      setIsEditingFilename(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingFilename(false);
+    // Reset to original filename
+    const baseName = originalFileName.replace(/\.[^/.]+$/, '');
+    setCustomFilename(baseName);
+  };
+
+  const handleFilenameKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSaveFilename();
+    } else if (e.key === 'Escape') {
+      handleCancelEdit();
+    }
+  };
+
+  const handleFilenameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomFilename(e.target.value);
   };
 
   const formatFileSize = (bytes: number): string => {
@@ -124,13 +167,53 @@ export const DownloadSection = ({
 
       <div className="p-4 bg-success/5 border border-success/20 rounded-lg space-y-3">
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-foreground">
-              {originalFileName.replace(/\.[^/.]+$/, '')}.{format.startsWith('mp3') ? 'mp3' : 'wav'}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {formatFileSize(audioBlob.size)} • {format.toUpperCase()}
-            </p>
+          <div className="flex-1 min-w-0">
+            {isEditingFilename ? (
+              <div className="flex items-center gap-2">
+                <Input
+                  ref={filenameInputRef}
+                  value={customFilename}
+                  onChange={handleFilenameChange}
+                  onKeyDown={handleFilenameKeyPress}
+                  className="flex-1 text-sm"
+                  placeholder="Enter filename"
+                />
+                <Button
+                  size="sm"
+                  onClick={handleSaveFilename}
+                  className="h-8 px-2"
+                >
+                  <Save className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleCancelEdit}
+                  className="h-8 px-2"
+                >
+                  Cancel
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-foreground truncate">
+                    {customFilename || 'audio'}.{format.startsWith('mp3') ? 'mp3' : 'wav'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatFileSize(audioBlob.size)} • {format.toUpperCase()}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleEditFilename}
+                  className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                >
+                  <Edit3 className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
