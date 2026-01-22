@@ -6,47 +6,41 @@ import { UploadZone } from './UploadZone';
 import { FormatSelector } from './FormatSelector';
 import { ConvertButton } from './ConvertButton';
 import { DownloadSection } from './DownloadSection';
-
 export const VideoConverter = () => {
   const [file, setFile] = useState<File | null>(null);
   const [format, setFormat] = useState<OutputFormat>('mp3');
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  
-  const { isLoading, isConverting, progress, error, convertToAudio } = useFFmpeg();
-
+  const {
+    isLoading,
+    isConverting,
+    progress,
+    error,
+    convertToAudio
+  } = useFFmpeg();
   const handleConvert = useCallback(async () => {
     if (!file) return;
-    
     setAudioBlob(null);
     const result = await convertToAudio(file, format);
     if (result) {
       setAudioBlob(result);
     }
   }, [file, format, convertToAudio]);
-
   const handleReset = useCallback(() => {
     setFile(null);
     setAudioBlob(null);
   }, []);
-
   const isProcessing = isLoading || isConverting;
-
-  return (
-    <div className="w-full max-w-md mx-auto px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-8"
-      >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', bounce: 0.5, delay: 0.2 }}
-          className="inline-flex items-center justify-center w-16 h-16 gradient-primary rounded-2xl shadow-primary mb-6"
-        >
-          <Video className="w-8 h-8 text-primary-foreground" />
-        </motion.div>
+  return <div className="w-full max-w-md mx-auto px-4">
+      <motion.div initial={{
+      opacity: 0,
+      y: 20
+    }} animate={{
+      opacity: 1,
+      y: 0
+    }} transition={{
+      duration: 0.5
+    }} className="text-center mb-8">
+        
         
         <h1 className="text-3xl font-bold text-foreground mb-2">
           Video to Audio
@@ -56,60 +50,40 @@ export const VideoConverter = () => {
         </p>
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="bg-card rounded-2xl shadow-card border border-border p-6 space-y-6"
-      >
-        {!audioBlob ? (
-          <>
-            <UploadZone 
-              file={file} 
-              onFileSelect={setFile}
-              disabled={isProcessing}
-            />
+      <motion.div initial={{
+      opacity: 0,
+      y: 20
+    }} animate={{
+      opacity: 1,
+      y: 0
+    }} transition={{
+      duration: 0.5,
+      delay: 0.1
+    }} className="bg-card rounded-2xl shadow-card border border-border p-6 space-y-6">
+        {!audioBlob ? <>
+            <UploadZone file={file} onFileSelect={setFile} disabled={isProcessing} />
             
-            <FormatSelector 
-              value={format} 
-              onChange={setFormat}
-              disabled={isProcessing}
-            />
+            <FormatSelector value={format} onChange={setFormat} disabled={isProcessing} />
             
-            <ConvertButton
-              onClick={handleConvert}
-              disabled={!file}
-              isLoading={isLoading}
-              isConverting={isConverting}
-              progress={progress}
-            />
+            <ConvertButton onClick={handleConvert} disabled={!file} isLoading={isLoading} isConverting={isConverting} progress={progress} />
             
-            {error && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-sm text-destructive text-center"
-              >
+            {error && <motion.p initial={{
+          opacity: 0
+        }} animate={{
+          opacity: 1
+        }} className="text-sm text-destructive text-center">
                 {error}
-              </motion.p>
-            )}
-          </>
-        ) : (
-          <DownloadSection
-            audioBlob={audioBlob}
-            originalFileName={file?.name || 'audio'}
-            format={format}
-            onReset={handleReset}
-          />
-        )}
+              </motion.p>}
+          </> : <DownloadSection audioBlob={audioBlob} originalFileName={file?.name || 'audio'} format={format} onReset={handleReset} />}
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        className="mt-8 flex items-center justify-center gap-6 text-xs text-muted-foreground"
-      >
+      <motion.div initial={{
+      opacity: 0
+    }} animate={{
+      opacity: 1
+    }} transition={{
+      delay: 0.4
+    }} className="mt-8 flex items-center justify-center gap-6 text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5">
           <Shield className="w-3.5 h-3.5" />
           <span>100% Private</span>
@@ -120,14 +94,14 @@ export const VideoConverter = () => {
         </div>
       </motion.div>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="text-center text-xs text-muted-foreground mt-4"
-      >
+      <motion.p initial={{
+      opacity: 0
+    }} animate={{
+      opacity: 1
+    }} transition={{
+      delay: 0.5
+    }} className="text-center text-xs text-muted-foreground mt-4">
         Simple. Fast. No uploads saved.
       </motion.p>
-    </div>
-  );
+    </div>;
 };
